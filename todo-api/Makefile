@@ -8,9 +8,3 @@ dev:
 	sqlx db create
 	sqlx migrate run
 	cargo run
-
-test:
-	cargo test
-
-test-s:
-	cargo test --no-default-features
