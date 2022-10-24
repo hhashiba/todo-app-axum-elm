@@ -1,7 +1,4 @@
 # todo-app-axum-elm
-./todo-api
-  $make db
-./todo-api
-  $make dev
-./todo-front
-  $elm reactor
+1. ./todo-api make db\n
+2. ./todo-api make dev\n
+3. ./todo-front elm reactor\n
