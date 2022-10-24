@@ -41,7 +41,6 @@ async fn main() {
 
 fn create_app<T: TodoRepository>(repository: T) -> Router {
     Router::new()
-        .route("/", get(root))
         .route("/todos", post(create_todo::<T>).get(all_todo::<T>))
         .route(
             "/todos/:id",
@@ -61,8 +60,4 @@ fn create_app<T: TodoRepository>(repository: T) -> Router {
                 ]),
         )
         .layer(Extension(Arc::new(repository)))
-}
-
-async fn root() -> &'static str {
-    "Hello, World!"
 }
