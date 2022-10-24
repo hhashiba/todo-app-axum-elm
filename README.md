@@ -1,4 +1,5 @@
 # todo-app-axum-elm
-1 ./todo-api $make db<br>
-2 ./todo-api $make dev<br>
-3 ./todo-front $elm reactor<br>
+1 start the docker app.
+2 ./todo-api $make db<br>
+3 ./todo-api $make dev<br>
+4 ./todo-front $elm reactor<br>
