@@ -23,7 +23,7 @@ async fn main() {
     tracing_subscriber::fmt::init();
     dotenv().ok();
 
-    let database_url = &env::var("DATABASE_URL").expect("undefined [DATABASE_URL");
+    let database_url = &env::var("DATABASE_URL").expect("undefined [DATABASE_URL]");
     tracing::debug!("start connect database...");
     let pool = PgPool::connect(database_url)
         .await
