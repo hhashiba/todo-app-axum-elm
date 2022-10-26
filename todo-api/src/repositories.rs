@@ -2,7 +2,6 @@ use axum::async_trait;
 use serde::{Deserialize, Serialize};
 use sqlx::{FromRow, PgPool};
 use thiserror::Error;
-use validator::Validate;
 
 #[derive(Debug, Error)]
 enum RepositoryError {
@@ -21,24 +20,21 @@ pub trait TodoRepository: Clone + std::marker::Send + std::marker::Sync + 'stati
     async fn delete(&self, id: i32) -> anyhow::Result<()>;
 }
 
-#[derive(Debug, Deserialize, Serialize, Clone, PartialEq, Eq, FromRow)]
+#[derive(Debug, Deserialize, Serialize, Clone, FromRow)]
 pub struct Todo {
     id: i32,
     text: String,
     completed: bool,
 }
 
-#[derive(Debug, Serialize, Deserialize, Clone, PartialEq, Eq, Validate)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct CreateTodo {
-    #[validate(length(min = 1, message = "Can not be empty!"))]
-    #[validate(length(max = 30, message = "Over text length!"))]
+
     text: String,
 }
 
-#[derive(Debug, Serialize, Deserialize, Clone, PartialEq, Eq, Validate)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct UpdateTodo {
-    #[validate(length(min = 1, message = "Can not be empty!"))]
-    #[validate(length(max = 30, message = "Over text length!"))]
     text: Option<String>,
     completed: Option<bool>,
 }
