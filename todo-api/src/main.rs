@@ -1,20 +1,14 @@
-mod handlers;
-mod repositories;
+mod domain;
+mod handler;
+mod infra;
 
-use crate::handlers::{all_todo, create_todo, delete_todo, find_todo, update_todo};
-use crate::repositories::{TodoRepository, TodoRepositoryForDb};
-use axum::{
-    extract::Extension,
-    http::Method,
-    routing::{get, post},
-    Router,
-};
+use crate::handler::route::create_app;
+use crate::infra::sqlhandler::TodoRepositoryForDb;
+
 use dotenv::dotenv;
-use http::header::CONTENT_TYPE;
 use sqlx::PgPool;
+use std::env;
 use std::net::SocketAddr;
-use std::{env, sync::Arc};
-use tower_http::cors::{CorsLayer, Origin};
 
 #[tokio::main]
 async fn main() {
@@ -37,27 +31,4 @@ async fn main() {
         .serve(app.into_make_service())
         .await
         .unwrap()
-}
-
-fn create_app<T: TodoRepository>(repository: T) -> Router {
-    Router::new()
-        .route("/todos", post(create_todo::<T>).get(all_todo::<T>))
-        .route(
-            "/todos/:id",
-            get(find_todo::<T>)
-                .patch(update_todo::<T>)
-                .delete(delete_todo::<T>),
-        )
-        .layer(
-            CorsLayer::new()
-                .allow_origin(Origin::exact("http://localhost:8000".parse().unwrap()))
-                .allow_headers([CONTENT_TYPE])
-                .allow_methods(vec![
-                    Method::GET,
-                    Method::POST,
-                    Method::PATCH,
-                    Method::DELETE,
-                ]),
-        )
-        .layer(Extension(Arc::new(repository)))
 }

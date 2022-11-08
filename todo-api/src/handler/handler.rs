@@ -1,4 +1,6 @@
-use crate::repositories::{CreateTodo, TodoRepository, UpdateTodo};
+use crate::domain::model::todo::{CreateTodo, UpdateTodo};
+use crate::domain::repository::todorepository::TodoRepository;
+
 use axum::{
     extract::{Extension, Path},
     http::StatusCode,
@@ -51,7 +53,6 @@ pub async fn update_todo<T: TodoRepository>(
 
 pub async fn delete_todo<T: TodoRepository>(
     Path(id): Path<i32>,
-
     Extension(repository): Extension<Arc<T>>,
 ) -> StatusCode {
     repository

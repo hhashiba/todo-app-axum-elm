@@ -1,43 +1,8 @@
+use crate::domain::model::todo::{CreateTodo, Todo, UpdateTodo};
+use crate::domain::repository::todorepository::{RepositoryError, TodoRepository};
+
 use axum::async_trait;
-use serde::{Deserialize, Serialize};
-use sqlx::{FromRow, PgPool};
-use thiserror::Error;
-
-#[derive(Debug, Error)]
-enum RepositoryError {
-    #[error("Unexpected Error: [{0}]")]
-    Unexpected(String),
-    #[error("NotFound, id is {0}")]
-    NotFound(i32),
-}
-
-#[async_trait]
-pub trait TodoRepository: Clone + std::marker::Send + std::marker::Sync + 'static {
-    async fn create(&self, payload: CreateTodo) -> anyhow::Result<Todo>;
-    async fn find(&self, id: i32) -> anyhow::Result<Todo>;
-    async fn all(&self) -> anyhow::Result<Vec<Todo>>;
-    async fn update(&self, id: i32, payload: UpdateTodo) -> anyhow::Result<Todo>;
-    async fn delete(&self, id: i32) -> anyhow::Result<()>;
-}
-
-#[derive(Debug, Deserialize, Serialize, Clone, FromRow)]
-pub struct Todo {
-    id: i32,
-    text: String,
-    completed: bool,
-}
-
-#[derive(Debug, Serialize, Deserialize, Clone)]
-pub struct CreateTodo {
-
-    text: String,
-}
-
-#[derive(Debug, Serialize, Deserialize, Clone)]
-pub struct UpdateTodo {
-    text: Option<String>,
-    completed: Option<bool>,
-}
+use sqlx::PgPool;
 
 #[derive(Debug, Clone)]
 pub struct TodoRepositoryForDb {
@@ -45,7 +10,7 @@ pub struct TodoRepositoryForDb {
 }
 impl TodoRepositoryForDb {
     pub fn new(pool: PgPool) -> Self {
-        TodoRepositoryForDb { pool }
+        Self { pool }
     }
 }
 #[async_trait]
